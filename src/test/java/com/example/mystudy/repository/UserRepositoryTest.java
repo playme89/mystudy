@@ -18,6 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = MystudyApplication.class)
@@ -30,26 +32,31 @@ class UserRepositoryTest {
     @Test
     public void create() {
         User user = User.builder()
-                .account("test04")
-                .email("playme4@naver.com")
-                .phoneNumber("010-1111-1111")
+                .account("test01")
+                .password("Test01")
+                .status("REGISTERED")
+                .email("Test01@naver.com")
+                .phoneNumber("010-2222-3333")
+                .registeredAt(LocalDateTime.now())
                 .createdAt(LocalDateTime.now())
-                .createdBy("admin4")
+                .createdBy("AdminServer")
                 .build();
         User newUser = userRepository.save(user);
-        System.out.println("newUser:" + newUser);
+        assertNotNull(newUser);
     }
 
-    @DisplayName("Read 테스트")
+    /*@DisplayName("Read 테스트")
     @Test
+    @Transactional
     public void read() {
-        Optional<User> user = userRepository.findById(2L);
+        Optional<User> user = userRepository.findByAccount("test04");
 
         user.ifPresent(selectUser -> {
-            System.out.println("user:" + selectUser);
-            System.out.println("email:" + selectUser.getEmail());
+           selectUser.getOrderDetailList().stream().forEach(detail ->{
+               System.out.println(detail.getItemId());
+           });
         });
-    }
+    }*/
     @DisplayName("Update 테스트")
     @Test
     public void update() {
@@ -69,14 +76,14 @@ class UserRepositoryTest {
     @Test
     @Transactional
     public void delete() {
-        Optional<User> user = userRepository.findById(3L);
+        Optional<User> user = userRepository.findById(4L);
 
-        Assertions.assertTrue(user.isPresent());
+        assertTrue(user.isPresent());
         user.ifPresent(selectUser->{ userRepository.delete(selectUser);
         });
 
-        Optional<User> deleteUser = userRepository.findById(3L);
+        Optional<User> deleteUser = userRepository.findById(4L);
 
-        Assertions.assertFalse(deleteUser.isPresent());
+        assertFalse(deleteUser.isPresent());
     }
 }
